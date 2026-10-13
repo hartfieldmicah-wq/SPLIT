@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <!-- SPLIT app icon: the bolt from the app header, split by a clean gap -->
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="48%" r="72%"><stop offset="0" stop-color="#2a080d"/><stop offset=".6" stop-color="#110507"/><stop offset="1" stop-color="#0a0506"/></radialGradient>
+    <linearGradient id="gRed" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ff5a5a"/><stop offset="1" stop-color="#c4121f"/></linearGradient>
+    <filter id="lg" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="2.2"/></filter>
+    <mask id="gap" maskUnits="userSpaceOnUse" x="-20" y="-20" width="104" height="104"><rect x="-20" y="-20" width="104" height="104" fill="#fff"/><path d="M47 -2 19 66" stroke="#000" stroke-width="3.6"/></mask>
+  </defs>
+  <rect width="512" height="512" fill="url(#bg)"/>
+  <g transform="translate(256 256) scale(5.3) translate(-32 -32)" mask="url(#gap)">
+    <path d="M38 6H20L10 32h14l-5 26 35-34H34z" fill="#ff1e2d" filter="url(#lg)" opacity=".8"/>
+    <path d="M38 6H20L10 32h14l-5 26 35-34H34z" fill="url(#gRed)"/>
+  </g>
+</svg>
