@@ -1,5 +1,5 @@
 /* SPLIT service worker: caches the app so it works fully offline. Bump VERSION when you upload a new index.html. */
-const VERSION = "split-v7-1";
+const VERSION = "split-v8-1";
 const FILES = ["./", "./index.html", "./manifest.webmanifest", "./logo.svg", "./icon-192.png", "./icon-512.png", "./icon-180.png", "./icon-maskable-512.png", "./favicon-32.png"];
 self.addEventListener("install", e => {
   e.waitUntil(caches.open(VERSION).then(c => Promise.all(FILES.map(f => c.add(f).catch(() => null)))).then(() => self.skipWaiting()));

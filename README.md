@@ -15,7 +15,7 @@ Personal training app: workouts, live session logging, jumping and Pilates libra
 Open it once while you have signal. After that, SPLIT works with no internet at all. **Settings → Offline** shows "Saved for offline" when it's ready.
 
 ## Updating
-Upload the new `index.html`, then in `sw.js` change the `VERSION` line (for example `split-v7-1` → `split-v7-2`). Open the app, then close and reopen it to get the new version. Your data isn't touched.
+Upload the new `index.html`, then in `sw.js` change the `VERSION` line (for example `split-v8-1` → `split-v8-2`). Open the app, then close and reopen it to get the new version. Your data isn't touched.
 
 ## Your data
 Everything is stored on your phone. Use **Settings → Backup & restore** now and then to save a backup file.

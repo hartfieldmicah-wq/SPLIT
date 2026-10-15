@@ -616,7 +616,7 @@ nav button svg{width:23px;height:23px}
       <div class="card" style="margin-top:12px"><b style="font-size:15px">Offline</b><p class="sub" id="swStat" style="margin:4px 0 12px;font-size:12px"></p><button class="btn" id="swUpdate" style="width:100%">Check for update</button></div>
 
       <button class="danger" id="resetBtn">Reset all data</button>
-      <div class="ver">SPLIT · BUILD v7</div>
+      <div class="ver">SPLIT · BUILD v8</div>
     </section>
   </main>
 
@@ -1427,12 +1427,7 @@ function Stage(box,anim,tags,mk,opt){
   return {destroy:function(){alive=false;cancelAnimationFrame(raf)},setSpeed:function(s){speed=s},toggle:function(){playing=!playing;return playing},isPlaying:function(){return playing},render:render,def:def};
 }
 
-/* ===== SPLIT v7 anatomical body renderer =====
-   Limbs are swept muscle profiles (quads, hamstrings, calves, biceps, triceps, forearms),
-   the torso is a swept elliptical cross-section along a curved spine (glutes, waist, ribcage, chest, traps),
-   and every part gets cylindrical light-and-shadow shading. Replaces the capsule mannequin. */
-var BTONE={n:["#e06a74","#a8343f","#5c1820","#2a0a0f","#3d1017"],m:["#b24852","#7a2630","#40121a","#1e070b","#2c0b11"],f:["#74303a","#4c1820","#2a0c12","#130508","#1c070b"]};
-var LS2=(function(){var a=-0.45,b=-0.89,l=Math.sqrt(a*a+b*b);return [a/l,b/l]})();
+/* ===== SPLIT v7.1 body: the v6 look, with seamless one-piece limbs and attached feet ===== */
 function profAt(pr,t){
   if(t<=pr[0][0])return pr[0][1];
   for(var i=1;i<pr.length;i++)if(t<=pr[i][0]){var a=pr[i-1],b=pr[i],u=(t-a[0])/(b[0]-a[0]);u=u*u*(3-2*u);return a[1]+(b[1]-a[1])*u}
@@ -1440,168 +1435,101 @@ function profAt(pr,t){
 }
 function smoothClosed(pts){
   var n=pts.length,s="M"+f1(pts[0][0])+" "+f1(pts[0][1]);
-  for(var i=0;i<n;i++){
-    var p0=pts[(i-1+n)%n],p1=pts[i],p2=pts[(i+1)%n],p3=pts[(i+2)%n];
-    s+="C"+f1(p1[0]+(p2[0]-p0[0])/6)+" "+f1(p1[1]+(p2[1]-p0[1])/6)+" "+f1(p2[0]-(p3[0]-p1[0])/6)+" "+f1(p2[1]-(p3[1]-p1[1])/6)+" "+f1(p2[0])+" "+f1(p2[1]);
-  }
+  for(var i=0;i<n;i++){var p0=pts[(i-1+n)%n],p1=pts[i],p2=pts[(i+1)%n],p3=pts[(i+2)%n];
+    s+="C"+f1(p1[0]+(p2[0]-p0[0])/6)+" "+f1(p1[1]+(p2[1]-p0[1])/6)+" "+f1(p2[0]-(p3[0]-p1[0])/6)+" "+f1(p2[1]-(p3[1]-p1[1])/6)+" "+f1(p2[0])+" "+f1(p2[1]);}
   return s+"Z";
 }
-function dir2(cam,v){var o=prj(cam,[0,0,0]),p=prj(cam,v);return [p[0]-o[0],p[1]-o[1]]}
 function n2(v){var l=Math.sqrt(v[0]*v[0]+v[1]*v[1])||1;return [v[0]/l,v[1]/l]}
-/* outline from a 2D centreline with per-sample normals and left/right radii, round caps at both ends */
-function sweepOutline(C,N,RL,RR){
-  var k=C.length,i,j,out=[],e=k-1;
-  var fe=n2([C[e][0]-C[Math.max(0,e-1)][0],C[e][1]-C[Math.max(0,e-1)][1]]),fs=n2([C[1][0]-C[0][0],C[1][1]-C[0][1]]);
-  for(i=0;i<k;i++)out.push([C[i][0]+N[i][0]*RL[i],C[i][1]+N[i][1]*RL[i]]);
-  for(j=1;j<6;j++){var a=j/6*Math.PI,r=RL[e]+(RR[e]-RL[e])*(j/6),cs=Math.cos(a),sn=Math.sin(a);
-    out.push([C[e][0]+(N[e][0]*cs+fe[0]*sn)*r,C[e][1]+(N[e][1]*cs+fe[1]*sn)*r]);}
-  for(i=k-1;i>=0;i--)out.push([C[i][0]-N[i][0]*RR[i],C[i][1]-N[i][1]*RR[i]]);
-  for(j=1;j<6;j++){var a2=j/6*Math.PI,r2=RR[0]+(RL[0]-RR[0])*(j/6),c2=Math.cos(a2),s2=Math.sin(a2);
-    out.push([C[0][0]+(-N[0][0]*c2-fs[0]*s2)*r2,C[0][1]+(-N[0][1]*c2-fs[1]*s2)*r2]);}
-  return out;
-}
-function shadeGrad(id,c,n,R){
-  var lit=(n[0]*LS2[0]+n[1]*LS2[1])>0?1:-1,a=[c[0]+n[0]*R*lit,c[1]+n[1]*R*lit],b=[c[0]-n[0]*R*lit,c[1]-n[1]*R*lit];
-  return [a,b];
+/* one continuous tapered limb through several joints (no seams, rounded joints, no inner-bend loops) */
+function chainOutline(p,segProf){
+  var C=[],R=[],k,i,s;
+  function cr(a,b,c,d,t){var t2=t*t,t3=t2*t;return [0.5*(2*b[0]+(-a[0]+c[0])*t+(2*a[0]-5*b[0]+4*c[0]-d[0])*t2+(-a[0]+3*b[0]-3*c[0]+d[0])*t3),0.5*(2*b[1]+(-a[1]+c[1])*t+(2*a[1]-5*b[1]+4*c[1]-d[1])*t2+(-a[1]+3*b[1]-3*c[1]+d[1])*t3)]}
+  var n=p.length;
+  for(i=0;i<n-1;i++){var a=p[Math.max(0,i-1)],b=p[i],c=p[i+1],d=p[Math.min(n-1,i+2)];
+    var N=8;for(s=0;s<N;s++){var t=s/N;C.push(cr(a,b,c,d,t));R.push(profAt(segProf[i],t))}}
+  C.push([p[n-1][0],p[n-1][1]]);R.push(profAt(segProf[n-2],1));
+  var T=[];for(k=0;k<C.length;k++){var q0=C[Math.max(0,k-1)],q1=C[Math.min(C.length-1,k+1)];T.push(n2([q1[0]-q0[0],q1[1]-q0[1]]))}
+  var Lp=[],Rp=[];
+  for(k=0;k<C.length;k++){var nx=-T[k][1],ny=T[k][0];Lp.push([C[k][0]+nx*R[k],C[k][1]+ny*R[k],T[k]]);Rp.push([C[k][0]-nx*R[k],C[k][1]-ny*R[k],T[k]])}
+  function clean(arr){var o=[arr[0]];for(var j=1;j<arr.length;j++){var l=o[o.length-1],q=arr[j];if((q[0]-l[0])*q[2][0]+(q[1]-l[1])*q[2][1]>0.15)o.push(q)}
+    if(o[o.length-1]!==arr[arr.length-1])o.push(arr[arr.length-1]);return o}
+  Lp=clean(Lp);Rp=clean(Rp);
+  var out=Lp.map(function(q){return [q[0],q[1]]}),e=C.length-1,te=T[e],re=R[e],ce=C[e],j2;
+  var nE=[-te[1],te[0]];
+  for(j2=1;j2<6;j2++){var an=j2/6*Math.PI;out.push([ce[0]+(nE[0]*Math.cos(an)+te[0]*Math.sin(an))*re,ce[1]+(nE[1]*Math.cos(an)+te[1]*Math.sin(an))*re])}
+  for(j2=Rp.length-1;j2>=0;j2--)out.push([Rp[j2][0],Rp[j2][1]]);
+  var t0=T[0],r0=R[0],c0=C[0],n0=[t0[1],-t0[0]];
+  for(j2=1;j2<6;j2++){var a2=j2/6*Math.PI;out.push([c0[0]+(n0[0]*Math.cos(a2)-t0[0]*Math.sin(a2))*r0,c0[1]+(n0[1]*Math.cos(a2)-t0[1]*Math.sin(a2))*r0])}
+  return smoothClosed(out);
 }
 function bodyParts(J,cam,u,P){
-  var dt=dep(cam,vmid(J.P,J.C)),gi=0,cf=J.cf,pf=J.pf;
-  function tier(d){return d>dt+3?"n":d<dt-3?"f":"m"}
-  function emit(pts,c,n,R,d,force,extra){
-    var t=force||tier(d),T=BTONE[t],id=u+"b"+(gi++),ab=shadeGrad(id,c,n,R);
-    var g='<linearGradient id="'+id+'" gradientUnits="userSpaceOnUse" x1="'+f1(ab[0][0])+'" y1="'+f1(ab[0][1])+'" x2="'+f1(ab[1][0])+'" y2="'+f1(ab[1][1])+'">'+
-      '<stop offset="0" stop-color="'+T[1]+'"/><stop offset=".16" stop-color="'+T[0]+'"/><stop offset=".5" stop-color="'+T[1]+'"/><stop offset=".82" stop-color="'+T[3]+'"/><stop offset="1" stop-color="'+T[4]+'"/></linearGradient>';
-    P.push({z:d,s:g+'<path d="'+smoothClosed(pts)+'" fill="url(#'+id+')" stroke="#ff3a48" stroke-opacity="'+(t==="n"?.3:t==="m"?.18:.08)+'" stroke-width=".7" stroke-linejoin="round"/>'+(extra||"")});
-  }
-  /* straight limb segment a->b with front/back muscle profiles; frontV = 3D direction of the "front" profile */
-  function limb(a,b,pfr,pbk,frontV,bias){
-    var pa=prj(cam,a),pb=prj(cam,b),ax=n2([pb[0]-pa[0],pb[1]-pa[1]]),n=[-ax[1],ax[0]];
-    var fv=dir2(cam,frontV),s=(fv[0]*n[0]+fv[1]*n[1])>=0?1:-1;
-    var C=[],N=[],RL=[],RR=[],K=9,mx=0;
-    for(var i=0;i<=K;i++){var t=i/K,f=profAt(pfr,t),k=profAt(pbk,t);C.push([pa[0]+(pb[0]-pa[0])*t,pa[1]+(pb[1]-pa[1])*t]);N.push(n);
-      RL.push(s>0?f:k);RR.push(s>0?k:f);mx=Math.max(mx,f,k);}
-    var mid=[(pa[0]+pb[0])/2,(pa[1]+pb[1])/2];
-    emit(sweepOutline(C,N,RL,RR),mid,n,mx,(pa[2]+pb[2])/2+(bias||0));
-  }
-  function perpTo(v,axis){var a=vnorm(axis);return vsub(v,vmul(a,vdot(v,a)))}
-  /* ---- torso: swept ellipse along a curved spine ---- */
-  var SEC=[[-0.17,12.5,8.6,-3.4],[-0.07,16.0,10.4,-2.8],[0.05,16.6,10.4,-1.2],[0.25,14.2,9.6,0.5],[0.44,14.6,10.0,1.1],[0.62,15.8,11.0,1.6],[0.8,17.6,11.6,2.0],[0.93,18.2,10.6,0.8],[1.03,12.5,8.4,-0.8],[1.1,7.2,6.2,-0.4]];
-  var prW=SEC.map(function(s){return [s[0],s[1]]}),prD=SEC.map(function(s){return [s[0],s[2]]}),prO=SEC.map(function(s){return [s[0],s[3]]});
-  var LP=SK.LS,LU=SK.US,tm=LP/(LP+LU);
-  function spine(t){
-    var p0,p1,m0,m1,s;
-    if(t<0)return vma(J.P,pf.U,t*(LP+LU));
-    if(t>1)return vma(J.C,cf.U,(t-1)*(LP+LU));
-    var mt=vnorm(vadd(pf.U,cf.U));
-    if(t<=tm){s=t/tm;p0=J.P;p1=J.M;m0=vmul(pf.U,LP);m1=vmul(mt,LP)}
-    else{s=(t-tm)/(1-tm);p0=J.M;p1=J.C;m0=vmul(mt,LU);m1=vmul(cf.U,LU)}
-    var s2=s*s,s3=s2*s,h00=2*s3-3*s2+1,h10=s3-2*s2+s,h01=-2*s3+3*s2,h11=s3-s2;
-    return [p0[0]*h00+m0[0]*h10+p1[0]*h01+m1[0]*h11,p0[1]*h00+m0[1]*h10+p1[1]*h01+m1[1]*h11,p0[2]*h00+m0[2]*h10+p1[2]*h01+m1[2]*h11];
-  }
-  function frameAt(t){var w=t<=tm?0:Math.min(1,(t-tm)/(1-tm));return {F:vnorm(vlerp(pf.F,cf.F,w)),S:vnorm(vlerp(pf.S,cf.S,w))}}
-  var TC=[],TN=[],TR=[],T3=[],ts=[-0.17,-0.12,-0.07,0,0.08,0.16,0.25,0.34,0.44,0.53,0.62,0.71,0.8,0.87,0.93,0.98,1.03,1.1];
-  ts.forEach(function(t){var fr=frameAt(t),c=vma(spine(t),fr.F,profAt(prO,t));T3.push([c,fr])});
-  for(var i=0;i<T3.length;i++){
-    var c=T3[i][0],fr=T3[i][1],pc=prj(cam,c),a=T3[Math.max(0,i-1)][0],b=T3[Math.min(T3.length-1,i+1)][0];
-    var tg=n2(dir2(cam,vsub(b,a))),n=[-tg[1],tg[0]],S2=dir2(cam,fr.S),F2=dir2(cam,fr.F),t=ts[i];
-    var W=profAt(prW,t),D=profAt(prD,t),sx=S2[0]*n[0]+S2[1]*n[1],fx=F2[0]*n[0]+F2[1]*n[1],r=Math.sqrt(W*W*sx*sx+D*D*fx*fx);
-    TC.push([pc[0],pc[1]]);TN.push(n);TR.push(Math.max(4,r));
-  }
-  var tmid=prj(cam,J.M),tn=TN[8];
-  /* surface anatomy: only what faces the camera */
-  var det="",fF=ddep(cam,cf.F),fB=-fF,lineCol='stroke="#ff4a55" fill="none" stroke-linecap="round"';
-  function pt(v){var q=prj(cam,v);return f1(q[0])+" "+f1(q[1])}
-  if(fF>0.12){
-    var op=f1(Math.min(.32,fF*.4));
-    for(var g=0;g<2;g++){var sg=SIG[g];
-      det+='<path d="M'+pt(vma(vma(vma(J.C,cf.F,12.6),cf.U,-13),cf.S,sg*1))+'Q'+pt(vma(vma(vma(J.C,cf.F,13.4),cf.U,-15),cf.S,sg*9))+' '+pt(vma(vma(vma(J.C,cf.F,9),cf.U,-9),cf.S,sg*16))+'" '+lineCol+' stroke-width=".9" stroke-opacity="'+op+'"/>';}
-    det+='<path d="M'+pt(vma(vma(J.C,cf.F,12.4),cf.U,-15))+'L'+pt(vma(vma(J.M,pf.F,11.4),pf.U,-8))+'" '+lineCol+' stroke-width=".7" stroke-opacity="'+f1(op*.8)+'"/>';
-    [-4,3,10].forEach(function(dy){var y0=vma(vma(J.M,pf.F,11.6),pf.U,dy);det+='<path d="M'+pt(vma(y0,pf.S,-6))+'Q'+pt(vma(y0,pf.F,.8))+' '+pt(vma(y0,pf.S,6))+'" '+lineCol+' stroke-width=".6" stroke-opacity="'+f1(op*.6)+'"/>'});
-  }
-  if(fB>0.12){
-    var ob=f1(Math.min(.3,fB*.38));
-    det+='<path d="M'+pt(vma(vma(J.C,cf.F,-10.2),cf.U,2))+'L'+pt(vma(vma(J.P,pf.F,-9.6),pf.U,4))+'" '+lineCol+' stroke-width=".8" stroke-opacity="'+ob+'"/>';
-    for(var g2=0;g2<2;g2++){var s2=SIG[g2];det+='<path d="M'+pt(vma(vma(vma(J.C,cf.F,-10),cf.U,-2),cf.S,s2*4))+'Q'+pt(vma(vma(vma(J.C,cf.F,-11),cf.U,-10),cf.S,s2*12))+' '+pt(vma(vma(vma(J.C,cf.F,-8),cf.U,-19),cf.S,s2*7))+'" '+lineCol+' stroke-width=".7" stroke-opacity="'+f1(ob*.8)+'"/>';}
-    det+='<path d="M'+pt(vma(vma(J.P,pf.F,-11),pf.U,-6))+'L'+pt(vma(vma(J.P,pf.F,-11.5),pf.U,-13))+'" '+lineCol+' stroke-width=".8" stroke-opacity="'+ob+'"/>';
-  }
-  emit(sweepOutline(TC,TN,TR,TR),[tmid[0],tmid[1]],tn,Math.max.apply(null,TR),dt,"m",det);
-  /* ---- neck + head ---- */
-  var hd=J.head,Uh=J.Uh||cf.U,Fh=J.Fh||cf.F,Sh=vnorm(vcross(Fh,Uh));
-  limb(vma(J.C,cf.U,2),vma(vma(hd,Uh,-7),Fh,-1.5),[[0,6.4],[.5,5.6],[1,5.4]],[[0,7.4],[.5,5.8],[1,5.6]],Fh,-0.2);
-  var hp=[],hairP=[];
-  function ell(c,ru,rf,rs,arr,filt){for(var a=0;a<12;a++)for(var b=1;b<6;b++){var th=a/12*Math.PI*2,ph=b/6*Math.PI,x=Math.sin(ph)*Math.cos(th),y=Math.cos(ph),z=Math.sin(ph)*Math.sin(th);
-    if(filt&&!filt(y,x))continue;var p=vadd(vadd(vadd(c,vmul(Uh,ru*y)),vmul(Fh,rf*x)),vmul(Sh,rs*z));var q=prj(cam,p);arr.push([q[0],q[1]])}}
-  var crc=vma(hd,Uh,1.2);
-  ell(crc,11,9.8,8.0,hp);ell(vma(vma(hd,Fh,3.6),Uh,-5.4),6.4,6.6,6.2,hp);
-  var nose=prj(cam,vma(vma(hd,Fh,10.6),Uh,-1.5));hp.push([nose[0],nose[1]]);
-  ell(vma(vma(crc,Uh,.8),Fh,-.6),11.3,10.1,8.4,hairP,function(y,x){return y>0.3||(x<-0.45&&y>-0.35)});
-  var h1=prj(cam,hd),hn=n2(dir2(cam,Sh));
-  var hull1=hull(hp),hdet="",fdh=ddep(cam,Fh);
-  var hairHull=hull(hairP);
-  hdet+='<path d="'+smoothClosed(hairHull)+'" fill="#1b070b" fill-opacity=".85"/>';
-  if(fdh>-0.2){
-    for(var e=0;e<2;e++){var ec=prj(cam,vma(vma(vma(hd,Fh,8.6),Uh,0.6),Sh,SIG[e]*3.6));
-      hdet+='<ellipse cx="'+f1(ec[0])+'" cy="'+f1(ec[1])+'" rx="'+f1(1.5*Math.max(.35,Math.abs(ddep(cam,Fh))))+'" ry=".9" fill="#14050a" fill-opacity="'+f1(Math.min(.9,.4+fdh))+'"/>';}
-    var m1=prj(cam,vma(vma(vma(hd,Fh,9.0),Uh,-5.6),Sh,2.4)),m2=prj(cam,vma(vma(vma(hd,Fh,9.0),Uh,-5.6),Sh,-2.4));
-    hdet+='<path d="M'+f1(m1[0])+' '+f1(m1[1])+'L'+f1(m2[0])+' '+f1(m2[1])+'" stroke="#2a0a10" stroke-width=".8" stroke-opacity="'+f1(Math.min(.7,.3+fdh))+'"/>';
-  }
-  if(Math.abs(ddep(cam,Sh))>0.25){var er=prj(cam,vma(vma(hd,Sh,8.1*(ddep(cam,Sh)>0?1:-1)),Fh,-0.5));hdet+='<ellipse cx="'+f1(er[0])+'" cy="'+f1(er[1])+'" rx="1.6" ry="2.8" fill="#5a1a22" fill-opacity=".55"/>'}
-  emit(hull1,[h1[0],h1[1]],hn,11,h1[2]+0.2,"m",hdet);
-  /* ---- feet: tapered 3D foot (heel, arch, ball, toes, ankle bones) ---- */
-  function foot(j){
-    var heel=J.heel[j],toe=J.toe[j],an=J.an[j],d=vnorm(vsub(toe,heel)),L=vlen(vsub(toe,heel));
-    var upv=vnorm(perpTo(vsub(J.kn[j],an),d)),sd=vnorm(vcross(d,upv));
-    var ST=[[-0.04,2.4,3.2],[0.02,3.1,6.2],[0.14,3.3,8.6],[0.3,3.5,7.4],[0.5,4.3,5.0],[0.68,4.7,3.6],[0.83,4.4,2.7],[0.94,3.7,2.0],[1.0,2.7,1.2]];
-    var pts=[];
-    ST.forEach(function(q){var b=vma(heel,d,q[0]*L+(q[0]<0?0:0)),w=q[1],h=q[2];
-      [[0,w,0.4],[0,-w,0.4],[h,0,0],[h*0.75,w*0.8,0],[h*0.75,-w*0.8,0],[h*0.35,w,0],[h*0.35,-w,0]].forEach(function(o){var p=vadd(vadd(vma(b,upv,o[0]+o[2]),vmul(sd,o[1])),[0,0,0]);var pp=prj(cam,p);pts.push([pp[0],pp[1]])});});
-    var hl=hull(pts),c=prj(cam,vma(vma(heel,d,L*0.45),upv,3)),nn=n2(dir2(cam,upv)),dd="";
-    var sdv=ddep(cam,sd),upd=ddep(cam,upv);
-    if(Math.abs(sdv)>0.3){var mb=prj(cam,vma(vma(an,sd,(sdv>0?1:-1)*3.4),upv,-0.5));dd+='<ellipse cx="'+f1(mb[0])+'" cy="'+f1(mb[1])+'" rx="1.5" ry="1.8" fill="#ff8a92" fill-opacity=".18"/>'}
-    if(upd>0.2||Math.abs(sdv)>0.4){var t1=prj(cam,vma(vma(vma(heel,d,L*0.84),upv,2.9),sd,3.8)),t2=prj(cam,vma(vma(heel,d,L*0.88),upv,3.1)),t3=prj(cam,vma(vma(vma(heel,d,L*0.84),upv,2.9),sd,-3.8));
-      dd+='<path d="M'+f1(t1[0])+' '+f1(t1[1])+'Q'+f1(t2[0])+' '+f1(t2[1])+' '+f1(t3[0])+' '+f1(t3[1])+'" fill="none" stroke="#1e070b" stroke-opacity=".45" stroke-width=".6"/>'}
-    emit(hl,[c[0],c[1]],nn,7,c[2]+0.1,null,dd);
-  }
-  /* ---- hands: palm, curled fingers, thumb ---- */
-  function hand(j,end,fd){
-    var side=vnorm(perpTo(vsub(J.sh[0],J.sh[1]),fd)),pn=vnorm(vcross(fd,side));if(SIG[j]<0)side=vmul(side,-1);
-    var w0=vma(end,fd,-2.5),pts=[];
-    [[w0,2.4,1.6],[vma(end,fd,1.5),3.6,1.9],[vma(end,fd,4.2),4.0,1.8],[vma(vma(end,fd,6.4),pn,1.6),3.6,1.5],[vma(vma(end,fd,6.2),pn,3.6),3.2,1.3]].forEach(function(q){
-      [[q[1],q[2]],[-q[1],q[2]],[q[1],-q[2]],[-q[1],-q[2]]].forEach(function(o){var p=vadd(vma(q[0],side,o[0]),vmul(pn,o[1]));var pp=prj(cam,p);pts.push([pp[0],pp[1]])});});
-    var th=vma(vma(vma(end,side,3.6),fd,2.6),pn,2.6),tq=prj(cam,th);pts.push([tq[0],tq[1]]);
-    var c=prj(cam,vma(end,fd,1.5));
-    emit(hull(pts),[c[0],c[1]],n2(dir2(cam,side)),4.2,c[2]+0.32);
-  }
-  /* ---- limbs ---- */
-  var TH_F=[[0,8.4],[.18,9.2],[.45,8.6],[.75,7.0],[.92,5.9],[1,5.4]],TH_B=[[0,9.8],[.15,9.1],[.45,8.0],[.75,6.6],[.92,5.6],[1,5.2]];
-  var SH_F=[[0,5.4],[.15,4.6],[.5,3.6],[.85,2.9],[1,2.7]],SH_B=[[0,5.0],[.2,6.3],[.38,6.0],[.6,4.4],[.85,3.0],[1,2.8]];
-  var UA_F=[[0,5.4],[.3,5.5],[.6,5.0],[.85,4.0],[1,3.7]],UA_B=[[0,5.6],[.3,5.9],[.6,5.0],[.85,4.2],[1,3.9]];
-  var FA_F=[[0,4.0],[.2,4.7],[.5,3.8],[.85,2.8],[1,2.5]],FA_B=[[0,4.2],[.2,4.4],[.5,3.6],[.85,2.8],[1,2.5]];
+  var dt=dep(cam,vmid(J.P,J.C));
+  function sty(d){return d>dt+3?"n":d<dt-3?"f":"m"}
+  function part(path,d,force){var k=force||sty(d);P.push({z:d,s:'<path d="'+path+'" fill="url(#'+u+k+')" stroke="#ff3a48" stroke-opacity="'+(k==="n"?.62:k==="m"?.45:.22)+'" stroke-width=".9" stroke-linejoin="round"/>'})}
+  var gi=0,TONE={n:["#c24a57","#a8404b","#6a2029","#2e0c12","#3a121b"],m:["#9a3a45","#7c2a34","#4a1820","#1e080c","#2a0c12"],f:["#4a1820","#3a1218","#230b10","#10050a","#16070b"]};
+  function gpart(path,d,c,n,R,force){var k=force||sty(d),T=TONE[k],id=u+"L"+(gi++),lit=(n[0]*-0.45+n[1]*-0.89)>0?1:-1;
+    var x1=c[0]+n[0]*R*lit,y1=c[1]+n[1]*R*lit,x2=c[0]-n[0]*R*lit,y2=c[1]-n[1]*R*lit;
+    P.push({z:d,s:'<linearGradient id="'+id+'" gradientUnits="userSpaceOnUse" x1="'+f1(x1)+'" y1="'+f1(y1)+'" x2="'+f1(x2)+'" y2="'+f1(y2)+'"><stop offset="0" stop-color="'+T[1]+'"/><stop offset=".2" stop-color="'+T[0]+'"/><stop offset=".55" stop-color="'+T[2]+'"/><stop offset=".85" stop-color="'+T[3]+'"/><stop offset="1" stop-color="'+T[4]+'"/></linearGradient>'+
+      '<path d="'+path+'" fill="url(#'+id+')" stroke="#ff3a48" stroke-opacity="'+(k==="n"?.55:k==="m"?.4:.2)+'" stroke-width=".9" stroke-linejoin="round"/>'})}
+  function axisN(a,b){var d=n2([b[0]-a[0],b[1]-a[1]]);return [-d[1],d[0]]}
+  function cp(a,b,ra,rb,bias){var pa=prj(cam,a),pb=prj(cam,b);part(cap2(pa,pb,ra,rb),(pa[2]+pb[2])/2+(bias||0))}
+  /* torso hull */
+  var cf=J.cf,pf=J.pf,circles=[];
+  function cc(p,r){circles.push([prj(cam,p),r])}
+  for(var i=0;i<2;i++){var g=SIG[i];
+    cc(J.sh[i],7.2);cc(vma(vma(vma(J.C,cf.F,4),cf.U,-9),cf.S,g*8),10);cc(vma(vma(vma(J.C,cf.F,-5),cf.U,-10),cf.S,g*9),9.5);
+    cc(vma(vma(J.M,pf.F,1.5),pf.S,g*11),9.2);cc(vma(J.P,pf.S,g*11),9.6);cc(vma(vma(J.P,pf.F,-5),pf.S,g*7),9.6);}
+  cc(vma(J.M,pf.F,5),9);cc(vma(J.M,pf.F,-5),8.5);cc(vma(J.P,pf.F,4.5),8.5);cc(vma(J.C,cf.U,4),6.5);
+  var hp=[];circles.forEach(function(c){for(var k=0;k<14;k++){var t=k/14*Math.PI*2;hp.push([c[0][0]+c[1]*Math.cos(t),c[0][1]+c[1]*Math.sin(t)])}});
+  var thp=hull(hp),bx0=1e9,by0=1e9,bx1=-1e9,by1=-1e9;thp.forEach(function(q){bx0=Math.min(bx0,q[0]);by0=Math.min(by0,q[1]);bx1=Math.max(bx1,q[0]);by1=Math.max(by1,q[1])});
+  var tg='<linearGradient id="'+u+'T" gradientUnits="userSpaceOnUse" x1="'+f1(bx0)+'" y1="'+f1(by0)+'" x2="'+f1(bx1)+'" y2="'+f1(by1)+'"><stop offset="0" stop-color="#7c2a34"/><stop offset=".6" stop-color="#3a1218"/><stop offset="1" stop-color="#1c070b"/></linearGradient>';
+  P.push({z:dt,s:tg+'<path d="'+poly(thp)+'" fill="url(#'+u+'T)" stroke="#ff3a48" stroke-opacity=".45" stroke-width=".9" stroke-linejoin="round"/>'});
+  var fdp=ddep(cam,cf.F);
+  if(fdp>0.05){var fc=[];[[vma(vma(vma(J.C,cf.F,6),cf.U,-9),cf.S,8),8],[vma(vma(vma(J.C,cf.F,6),cf.U,-9),cf.S,-8),8],[vma(J.M,pf.F,6.5),7.5],[vma(vma(J.M,pf.F,5),pf.U,-10),7]].forEach(function(c){var q=prj(cam,c[0]);for(var k=0;k<12;k++){var t=k/12*Math.PI*2;fc.push([q[0]+c[1]*Math.cos(t),q[1]+c[1]*Math.sin(t)])}});
+    P.push({z:dt+0.005,s:'<path d="'+poly(hull(fc))+'" fill="#ff3a48" fill-opacity="'+f1(Math.min(.16,fdp*.2))+'"/>'});}
+  /* anatomical seams: sternum + waist line, only if facing camera */
+  if(ddep(cam,cf.F)>0.15){var a1=prj(cam,vma(vma(J.C,cf.F,11.5),cf.U,-4)),a2=prj(cam,vma(vma(J.M,pf.F,11),pf.U,-6));P.push({z:dt+0.01,s:'<path d="M'+f1(a1[0])+' '+f1(a1[1])+'L'+f1(a2[0])+' '+f1(a2[1])+'" stroke="#ff3a48" stroke-opacity=".25" stroke-width=".8"/>'})}
+  /* head + neck */
+  var hd=J.head,Uh=J.Uh||cf.U,Fh=J.Fh||cf.F;
+  cp(vma(J.C,cf.U,3),vma(hd,Uh,-6),5.6,5.2,-0.3);
+  var h1=prj(cam,hd),h2=prj(cam,vma(vma(hd,Fh,5),Uh,-6)),hh=[];
+  [[h1,10.5],[h2,6.2]].forEach(function(c){for(var k=0;k<16;k++){var t=k/16*Math.PI*2;hh.push([c[0][0]+c[1]*Math.cos(t),c[0][1]+c[1]*Math.sin(t)])}});
+  part(poly(hull(hh)),h1[2]+0.2,"m");
+  var fdh=ddep(cam,Fh);
+  if(fdh>-0.35){var e1=prj(cam,vma(vma(vma(hd,Fh,9.2),Uh,1.5),cf.S,4.5)),e2=prj(cam,vma(vma(vma(hd,Fh,9.2),Uh,1.5),cf.S,-4.5)),e0=prj(cam,vma(vma(hd,Fh,10.2),Uh,1.5));
+    P.push({z:h1[2]+0.21,s:'<path d="M'+f1(e1[0])+' '+f1(e1[1])+'Q'+f1(e0[0])+' '+f1(e0[1])+' '+f1(e2[0])+' '+f1(e2[1])+'" fill="none" stroke="#ff4a55" stroke-width="2" stroke-linecap="round" stroke-opacity="'+f1(Math.min(.9,0.45+fdh))+'"/>'});}
+  /* limbs: one seamless piece per leg and per arm */
+  var LEG=[[[0,8.9],[.25,8.6],[.7,7.0],[1,5.7]],[[0,5.7],[.22,6.3],[.5,5.0],[.85,3.9],[1,3.6]]];
+  var ARM=[[[0,5.9],[.3,5.6],[.75,4.8],[1,4.4]],[[0,4.4],[.2,4.7],[.7,3.7],[1,3.4]]];
+  function perpTo(v,ax){var a=vnorm(ax);return vsub(v,vmul(a,vdot(v,a)))}
+  var legDs=[];
   for(var j=0;j<2;j++){
     var hip=J.hip[j],kn=J.kn[j],an=J.an[j];
-    var thAx=vsub(kn,hip),thBack=vadd(perpTo(vsub(an,kn),thAx),vmul(pf.F,-3));
-    limb(vma(hip,thAx,-0.04),kn,TH_F,TH_B,vmul(thBack,-1),0);
-    var shAx=vsub(an,kn),calf=vadd(perpTo(vsub(hip,kn),shAx),vmul(pf.F,-3));
-    limb(kn,an,SH_F,SH_B,vmul(calf,-1),0.02);
-    var up=vnorm(vsub(kn,an));
-    foot(j);
+    var ph=prj(cam,vma(hip,vnorm(vsub(hip,kn)),2)),pk=prj(cam,kn),pa=prj(cam,an);
+    var legD=(prj(cam,hip)[2]+pk[2])/2;legDs.push(legD);
+    gpart(chainOutline([ph,pk,pa],LEG),legD,[(ph[0]+pa[0])/2,(ph[1]+pa[1])/2],axisN(ph,pa),11);
+    /* foot: grows out of the ankle, flat sole on the floor */
+    var heel=J.heel[j],toe=J.toe[j],d=vnorm(vsub(toe,heel)),FL=vlen(vsub(toe,heel)),upv=vnorm(perpTo(vsub(kn,an),d)),sd=vnorm(vcross(d,upv)),fp=[];
+    var ST=[[-0.03,2.4,0,3.4],[0.06,2.9,0,6.4],[0.2,3.1,0,7.6],[0.4,3.4,0,5.4],[0.62,3.9,0,3.6],[0.8,3.8,0,2.8],[0.93,3.1,0,2.1],[1,2.2,0,1.3]];
+    ST.forEach(function(q){var b=vma(vma(heel,d,q[0]*FL),upv,-0.6);[[0,q[1]],[0,-q[1]],[q[3],0],[q[3]*0.7,q[1]*0.85],[q[3]*0.7,-q[1]*0.85]].forEach(function(o){var pp=prj(cam,vadd(vma(b,upv,o[0]),vmul(sd,o[1])));fp.push([pp[0],pp[1]])})});
+    var shA=vnorm(vsub(kn,an)),s1=vnorm(perpTo(sd,shA)),s2=vnorm(vcross(shA,s1));
+    for(var a=0;a<10;a++){var th=a/10*Math.PI*2,pp2=prj(cam,vadd(vma(an,s1,Math.cos(th)*3.7),vmul(s2,Math.sin(th)*3.7)));fp.push([pp2[0],pp2[1]])}
+    gpart(smoothClosed(hull(fp)),pa[2]+0.1,[pa[0],pa[1]+4],n2(dir2v(cam,upv)),7);
     /* arm */
-    var sh=J.sh[j],el=J.el[j],ha=J.ha[j],wr=J.wr&&J.wr[j]?J.wr[j]:null,end=wr||ha;
-    var uaAx=vsub(el,sh),bic=vadd(perpTo(vsub(end,el),uaAx),vmul(cf.F,3));
-    limb(sh,el,UA_F,UA_B,bic,0.2);
-    var faAx=vsub(end,el),flex=vadd(perpTo(vsub(sh,el),faAx),vmul(cf.F,3));
-    limb(el,end,FA_F,FA_B,flex,0.25);
-    /* deltoid cap */
-    var dTop=vma(vma(sh,cf.U,2.2),cf.S,SIG[j]*-0.5);
-    limb(dTop,vlerp(sh,el,.42),[[0,6.4],[.4,6.6],[1,4.2]],[[0,6.6],[.4,6.4],[1,4.4]],cf.F,0.21);
-    /* hand */
-    var fd=wr&&J.hd?J.hd[j]:vnorm(vsub(ha,el));
-    hand(j,wr?vma(wr,fd,2.5):ha,fd);
-    /* knee cap + elbow point */
-    var kf=vnorm(vmul(thBack,-1)),kc=vma(vma(kn,kf,4.6),vnorm(thAx),-1.5),kcd=ddep(cam,kf);
-    if(kcd>-0.1){var kq=prj(cam,kc);P.push({z:kq[2]+0.03+(tier(kq[2])==="f"?0:0.05),s:'<ellipse cx="'+f1(kq[0])+'" cy="'+f1(kq[1])+'" rx="2.6" ry="3.1" fill="#ff9aa2" fill-opacity="'+f1(0.08+0.12*Math.max(0,kcd))+'"/>'})}
+    var end=J.wr&&J.wr[j]?J.wr[j]:J.ha[j];
+    var ps=prj(cam,J.sh[j]),pe=prj(cam,J.el[j]),pw=prj(cam,end);
+    gpart(chainOutline([ps,pe,pw],ARM),(ps[2]+pe[2])/2+0.2,[(ps[0]+pw[0])/2,(ps[1]+pw[1])/2],axisN(ps,pw),7);
+    if(J.wr&&J.wr[j]){cp(J.wr[j],vma(J.wr[j],J.hd[j],SK.HAND),3.9,3.2,0.3);}
+    else{var phh=prj(cam,J.ha[j]);part(circ2(phh,4.3),phh[2]+0.3);}
   }
+  /* pelvis patch: blends the tops of the thighs into the hips (no caps, no seams) */
+  var pp=[];function pc(p,r){var q=prj(cam,p);for(var k2=0;k2<14;k2++){var t2=k2/14*Math.PI*2;pp.push([q[0]+r*Math.cos(t2),q[1]+r*Math.sin(t2)])}}
+  for(var g3=0;g3<2;g3++){var sg=SIG[g3];pc(vma(J.P,pf.S,sg*11),9.4);pc(vma(vma(J.P,pf.F,-5),pf.S,sg*7),9.4);}
+  pc(vma(vma(J.P,pf.F,4.5),pf.U,2),8.0);pc(vma(J.P,pf.U,6),9);
+  var pd=Math.max(dt,Math.max.apply(null,legDs))+0.01,pq=prj(cam,J.P);
+  P.push({z:pd,s:'<path d="'+smoothClosed(hull(pp))+'" fill="url(#'+u+'T)"/>'});
 }
+function dir2v(cam,v){var o=prj(cam,[0,0,0]),p=prj(cam,v);return [p[0]-o[0],p[1]-o[1]]}
 
 /* ===== animation library helpers ===== */
 var ANIMS={};
