@@ -451,6 +451,73 @@ nav button svg{width:23px;height:23px}
 .prow small i{font-style:normal;color:#ff6a73}
 .vsel{display:flex;align-items:center;gap:8px;margin-top:10px;font-size:10px;font-weight:800;letter-spacing:.14em;color:var(--mute);text-transform:uppercase}
 .vsel select{flex:1;background:#12070a;border:1px solid var(--line);border-radius:10px;padding:9px 10px;color:#fff;font-size:13px;font-weight:700;-webkit-appearance:none;appearance:none}
+/* v9: header settings + circuits */
+header{position:relative}
+#hdrSet{position:absolute;right:14px;bottom:8px;width:40px;height:40px;border-radius:50%;border:1px solid var(--line);background:rgba(20,8,10,.7);display:flex;align-items:center;justify-content:center;color:var(--mute)}
+#hdrSet svg{width:20px;height:20px}#hdrSet.down{transform:scale(.9);color:#fff;border-color:var(--red)}
+.ccard{display:flex;align-items:center;gap:12px;padding:14px 14px 14px 16px;margin-bottom:10px;width:100%;text-align:left}
+.ccard .cmeta{flex:1;min-width:0}.ccard b{display:block;font-size:16px}.ccard span{font-size:12px;color:var(--mute)}
+.cgo{width:46px;height:46px;border-radius:50%;background:linear-gradient(135deg,#ff1e2d,#a30f1a);display:flex;align-items:center;justify-content:center;color:#fff;box-shadow:0 0 18px rgba(255,30,45,.5);flex:none}
+.cgo svg{width:20px;height:20px}
+#cName{width:100%;background:#12070a;border:1px solid var(--line);border-radius:14px;padding:14px 16px;color:#fff;font-size:18px;font-weight:800;margin:6px 0 10px;outline:none}
+#cName:focus{border-color:var(--red)}
+.cbrow{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:10px;font-size:12px;font-weight:700;color:#e8cfd2}
+.cbrow.top{margin:2px 0 8px}.cbrow.dim{color:var(--mute)}.cbrow .seg button{padding:8px 10px;font-size:12px}
+.cend{font-size:12px;color:var(--mute)}
+.cblock{padding:12px;margin-bottom:12px;border-color:#4a121a}
+.cbh{display:flex;gap:8px;align-items:center;margin-bottom:8px}
+.cbname{flex:1;min-width:0;background:transparent;border:none;border-bottom:1px dashed var(--line);color:#ff4a55;font-size:13px;font-weight:900;letter-spacing:.16em;text-transform:uppercase;padding:6px 2px;outline:none}
+.cbtools,.cstools{display:flex;gap:4px}
+.cbtools button,.cstools button{width:30px;height:30px;border-radius:50%;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;color:var(--mute)}
+.cbtools svg,.cstools svg{width:12px;height:12px}
+.cbtools button.down,.cstools button.down{border-color:var(--red);color:#fff}
+.cstep{display:flex;align-items:center;gap:6px;padding:6px 0;border-bottom:1px solid #2a1114}
+.cdot{width:8px;height:30px;border-radius:4px;background:var(--red);box-shadow:0 0 10px var(--red);flex:none}
+.cstep.rest .cdot{background:#5a5a66;box-shadow:none}
+.csname{flex:1;min-width:0;background:#12070a;border:1px solid var(--line);border-radius:10px;padding:10px;color:#fff;font-size:14px;font-weight:700;outline:none}
+.cstep.rest .csname{color:#c8c8d2}
+.csdur{width:62px;flex:none;background:#12070a;border:1px solid var(--line);border-radius:10px;padding:10px 4px;color:#fff;font-size:14px;font-weight:900;text-align:center;outline:none}
+.csname:focus,.csdur:focus,.cbrest:focus{border-color:var(--red)}
+.cspick{width:34px;height:34px;flex:none;border-radius:10px;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;color:#ff6a73}
+.cspick svg{width:16px;height:16px}.cspick.down{background:#2a0d12}
+.csref{font-size:10px;color:#ff8a92;margin:2px 0 4px 14px}
+.cempty{font-size:12px;color:var(--mute);padding:8px 2px}
+.cbadd{display:flex;gap:8px;margin-top:10px}.cbadd .btn{padding:11px;font-size:11px}
+.cstp{display:flex;align-items:center;gap:6px}
+.cstp button{width:34px;height:34px;border-radius:50%;border:1px solid var(--line);font-size:18px;font-weight:900;color:#fff}
+.cstp button.down{background:var(--red)}
+.cstp b{min-width:42px;text-align:center;font-size:16px;color:#fff}
+.cbrest{width:70px;background:#12070a;border:1px solid var(--line);border-radius:10px;padding:9px 4px;color:#fff;font-size:14px;font-weight:900;text-align:center;outline:none}
+.ctotal{text-align:center;color:var(--mute);font-size:12px;margin:6px 0 10px;letter-spacing:.1em;text-transform:uppercase;font-weight:800}
+.ctotal b{display:block;color:#fff;font-size:15px;letter-spacing:0;text-transform:none;margin-top:3px}
+/* runner */
+.crun{position:fixed;inset:0;z-index:60;display:flex;flex-direction:column;padding:calc(env(safe-area-inset-top) + 12px) 18px calc(env(safe-area-inset-bottom) + 16px);background:radial-gradient(120% 80% at 50% 30%,#3a0a10,#0a0506 70%);max-width:520px;margin:0 auto}
+.crun[hidden]{display:none!important}
+.crun.rest,.crun.ready{background:radial-gradient(120% 80% at 50% 30%,#1c1c26,#08080b 70%)}
+.crtop{display:flex;align-items:flex-start;gap:10px}
+.crtop>div{flex:1;min-width:0}.crtop b{display:block;font-size:18px;font-weight:900}.crtop span{font-size:12px;color:var(--mute);letter-spacing:.14em;text-transform:uppercase;font-weight:800}
+#crStop{width:40px;height:40px;border-radius:50%;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;color:#fff}
+#crStop svg{width:16px;height:16px}
+.crbar{height:5px;border-radius:3px;background:#2a1114;margin:12px 0 4px;overflow:hidden}
+.crbar i{display:block;height:100%;background:var(--red);box-shadow:0 0 10px var(--red);transition:width .3s}
+.crmain{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;min-height:0}
+.crstep{font-size:34px;font-weight:900;text-align:center;line-height:1.1;letter-spacing:.02em;text-transform:uppercase;text-shadow:0 0 22px rgba(255,30,45,.6);max-width:100%;overflow-wrap:anywhere}
+.crun.rest .crstep,.crun.ready .crstep{text-shadow:none;color:#d8d8e2}
+.crring{position:relative;width:min(64vw,250px);aspect-ratio:1}
+.crring svg{width:100%;height:100%;transform:rotate(-90deg);overflow:visible}
+.crring .trk{fill:none;stroke:#2a1114;stroke-width:12}
+.crring .fil{fill:none;stroke:var(--red);stroke-width:12;stroke-linecap:round;filter:drop-shadow(0 0 8px var(--red));transition:stroke-dashoffset .15s linear}
+.crun.rest .crring .fil,.crun.ready .crring .fil{stroke:#8a8a9c;filter:none}
+.crtime{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:64px;font-weight:900;font-variant-numeric:tabular-nums}
+.crun.paused .crtime{opacity:.45}
+.cranim{width:100%;max-width:240px;height:150px}
+.crnext{font-size:14px;color:var(--mute);text-align:center}.crnext b{color:#fff}
+#crDone{width:auto;padding:16px 28px}
+.crstats{display:flex;gap:10px;margin:8px 0 12px}
+.crstats>div{flex:1;background:rgba(20,8,10,.7);border:1px solid #2a1114;border-radius:14px;padding:10px;text-align:center}
+.crstats span{display:block;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--mute);font-weight:800}.crstats b{font-size:20px;font-variant-numeric:tabular-nums}
+.crctl{display:flex;gap:10px}.crctl .btn.primary{width:auto;flex:1.4}
+body.crunning #nav{visibility:hidden}
 </style>
 </head>
 <body>
@@ -487,6 +554,7 @@ nav button svg{width:23px;height:23px}
 <symbol id="i-chart" viewBox="0 0 24 24"><path fill="currentColor" d="M3 13h4v8H3zm7-9h4v17h-4zm7 6h4v11h-4z"/></symbol>
 <linearGradient id="cbar" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ff4d58"/><stop offset="1" stop-color="#7a0a14"/></linearGradient>
 <filter id="cglow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="2.2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+<symbol id="i-loop" viewBox="0 0 24 24"><path d="M4 12a8 8 0 0 1 13.7-5.6M20 12a8 8 0 0 1-13.7 5.6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/><path d="M18.5 2.5v4.6h-4.6M5.5 21.5v-4.6h4.6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
 <symbol id="i-body" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM6 9h12l-1.5 5-1 8h-2.5l-1-6-1 6H7.5l-1-8z"/></symbol>
   </defs>
 </svg>
@@ -506,6 +574,7 @@ nav button svg{width:23px;height:23px}
       </svg>
       <div class="wordmark">SPLIT</div>
     </div>
+    <button id="hdrSet" aria-label="Settings"><svg><use href="#i-gear"/></svg></button>
   </header>
 
   <main>
@@ -575,6 +644,16 @@ nav button svg{width:23px;height:23px}
       <div id="woList" style="margin-top:16px"></div>
     </section>
 
+    <section class="page" id="page-cir">
+      <h1>Circuits</h1>
+      <h2>Build any combo</h2>
+      <p class="sub">Stack exercises and rests with any time, repeat each circuit as many times as you want, and chain circuits with rest in between. Type your own exercise or pick one from the library.</p>
+      <button class="cta" id="cirNew"><svg><use href="#i-plus"/></svg>New circuit</button>
+      <div id="cirList" style="margin-top:16px"></div>
+      <h1>Templates</h1>
+      <div class="chips wrapchips" id="cirTpl"></div>
+    </section>
+
     <section class="page" id="page-pr">
       <h1>Progress</h1>
       <h2>Your numbers</h2>
@@ -601,6 +680,7 @@ nav button svg{width:23px;height:23px}
       <div class="card set"><div><b>Units</b><span>Weight display</span></div>
         <div class="seg" id="segUnits"><button data-v="lb">LB</button><button data-v="kg">KG</button></div></div>
       <div class="card set"><div><b>Glow animation</b><span>Flowing red background</span></div><button class="sw" id="swAnim" role="switch"></button></div>
+      <div class="card set"><div><b>Voice cues</b><span>Circuit timer announces each step</span></div><button class="sw" id="swVoice" role="switch"></button></div>
       <div class="card set"><div><b>Timer sound</b><span>Beeps on countdown and phase change</span></div><button class="sw" id="swSound" role="switch"></button></div>
       <div class="card set"><div><b>Haptics</b><span>Vibrate on tap (if supported)</span></div><button class="sw" id="swHaptic" role="switch"></button></div>
       <div class="card set"><div><b>Weekly goal</b><span>Sessions per week</span></div>
@@ -616,7 +696,7 @@ nav button svg{width:23px;height:23px}
       <div class="card" style="margin-top:12px"><b style="font-size:15px">Offline</b><p class="sub" id="swStat" style="margin:4px 0 12px;font-size:12px"></p><button class="btn" id="swUpdate" style="width:100%">Check for update</button></div>
 
       <button class="danger" id="resetBtn">Reset all data</button>
-      <div class="ver">SPLIT · BUILD v8</div>
+      <div class="ver">SPLIT · BUILD v9</div>
     </section>
   </main>
 
@@ -624,9 +704,10 @@ nav button svg{width:23px;height:23px}
     <button data-p="dash" class="on"><svg><use href="#i-home"/></svg>Home</button>
     <button data-p="ex"><svg><use href="#i-dumb"/></svg>Exercises</button>
     <button data-p="wo"><svg><use href="#i-list"/></svg>Workouts</button>
+    <button data-p="cir"><svg><use href="#i-loop"/></svg>Circuits</button>
     <button data-p="pr"><svg><use href="#i-chart"/></svg>Progress</button>
     <button data-p="tm"><svg><use href="#i-clock2"/></svg>Timer</button>
-    <button data-p="set"><svg><use href="#i-gear"/></svg>Settings</button>
+    
   </nav>
 </div>
 <div class="toast" id="toast"></div>
@@ -682,6 +763,35 @@ nav button svg{width:23px;height:23px}
   <button class="btn" id="lAdd" style="width:100%;margin:6px 0 10px"><svg><use href="#i-plus"/></svg>Add exercise</button>
   <div id="qPick" class="pickbox" hidden><input id="qSearch" type="text" placeholder="Search exercises" autocomplete="off"><div class="chips" id="qMus"></div><div class="chips" id="qEq"></div><div class="pcount" id="qCount"></div><div id="qList" class="plist"></div></div>
 </div></div>
+
+<div id="csheet" class="sheetwrap" aria-hidden="true"><div class="scrim" id="cScrim"></div><div class="panel">
+  <button id="cClose" aria-label="Close" style="position:absolute;top:10px;right:12px;width:36px;height:36px;border-radius:50%;background:#1c0d10;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;z-index:7"><svg width="16" height="16"><use href="#i-close"/></svg></button>
+  <h1 style="margin-top:6px">Circuit workout</h1>
+  <input id="cName" type="text" placeholder="Name it (e.g. Sprint ladder)" maxlength="40" autocomplete="off">
+  <div class="cbrow top"><span>Get-ready countdown</span><div class="seg" id="cReady"></div></div>
+  <p class="wsub">Times: type 40, 0:40, 1:30 or 2m. Leave an exercise's time empty to make it "go until I tap Done" (for reps).</p>
+  <div id="cBlocks"></div>
+  <button class="btn" id="cAddBlock" style="width:100%;margin:4px 0 12px"><svg><use href="#i-plus"/></svg>Add another circuit</button>
+  <div id="cPick" class="pickbox" hidden><div class="pcount" style="margin-bottom:8px">Pick an exercise</div><input id="cSearch" type="text" placeholder="Search exercises" autocomplete="off"><div class="chips" id="cMus"></div><div class="chips" id="cEq"></div><div class="pcount" id="cCount"></div><div id="cList" class="plist"></div></div>
+  <div class="ctotal">Total <b id="cTotal"></b></div>
+  <div class="wactions">
+    <button class="btn primary" id="cStart"><svg><use href="#i-play"/></svg>Start circuit</button>
+    <button class="btn danger2" id="cDel">Delete circuit workout</button>
+  </div>
+</div></div>
+<div id="crun" class="crun" hidden>
+  <div class="crtop"><div><b id="crName"></b><span id="crBlock"></span></div><button id="crStop" aria-label="Stop"><svg><use href="#i-close"/></svg></button></div>
+  <div class="crbar"><i id="crBar"></i></div>
+  <div class="crmain">
+    <div class="crstep" id="crStep"></div>
+    <div class="crring"><svg viewBox="0 0 240 240"><circle cx="120" cy="120" r="110" class="trk"/><circle cx="120" cy="120" r="110" class="fil" id="crRing" stroke-dasharray="691.15" stroke-dashoffset="0"/></svg><div class="crtime" id="crTime">0:00</div></div>
+    <div class="cranim" id="crAnim" hidden></div>
+    <button class="btn primary" id="crDone" hidden>Done · next</button>
+    <div class="crnext" id="crNext"></div>
+  </div>
+  <div class="crstats"><div><span>Elapsed</span><b id="crElapsed">0:00</b></div><div><span>Remaining</span><b id="crLeft">0:00</b></div></div>
+  <div class="crctl"><button class="btn" id="crPrev">Back</button><button class="btn primary" id="crPause">Pause</button><button class="btn" id="crNextBtn">Skip</button></div>
+</div>
 
 <div id="rotate"><svg><use href="#i-rot"/></svg>Rotate to portrait</div>
 <script>
@@ -2895,13 +3005,14 @@ function countFor(k){return EX[k].filter(match).length}
 var page="dash";
 function go(p){
   page=p;
-  ["dash","ex","wo","pr","tm","set"].forEach(function(id){$("page-"+id).classList.toggle("active",id===p)});
+  ["dash","ex","wo","cir","pr","tm","set"].forEach(function(id){$("page-"+id).classList.toggle("active",id===p)});
   document.querySelectorAll("#nav button").forEach(function(b){b.classList.toggle("on",b.getAttribute("data-p")===p)});
   $("page-"+p).scrollTop=0;
   if(p==="dash")renderDash();
   if(p==="ex")showList();
   if(p==="wo")renderWorkouts();
   if(p==="pr")renderProg();
+  if(p==="cir")renderCircuits();
   updateDraftBar();
 }
 pressAll("#nav button",function(el){go(el.getAttribute("data-p"))});
@@ -3847,6 +3958,229 @@ function update(){
 document.addEventListener("visibilitychange",function(){if(!document.hidden&&tick)update();if(!document.hidden&&(TM.run||TM.sw.run))wakeOn()});
 renderTimer();
 
+/* ---------- CIRCUITS: fully custom timed circuits (exercise / rest steps, repeats, rest between circuits) ---------- */
+if(!Array.isArray(S.circuits))S.circuits=[];
+if(S.cvoice===undefined)S.cvoice=true;
+function cuid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,6)}
+function parseDur(v){
+  v=String(v||"").trim().toLowerCase().replace(/\s+/g,"");
+  if(!v)return 0;
+  var m=/^(\d+):(\d{1,2})$/.exec(v);if(m)return parseInt(m[1],10)*60+parseInt(m[2],10);
+  m=/^(\d+(?:\.\d+)?)m(?:in)?(\d+)?s?$/.exec(v);if(m)return Math.round(parseFloat(m[1])*60)+(m[2]?parseInt(m[2],10):0);
+  m=/^(\d+)s?$/.exec(v);if(m)return parseInt(m[1],10);
+  return 0;
+}
+function fmtDur(s){if(!s)return "";return s<60?s+"s":Math.floor(s/60)+":"+pad(s%60)}
+function fmtClock(s){s=Math.max(0,Math.ceil(s));return Math.floor(s/60)+":"+pad(s%60)}
+function stepEx(name,sec,ref){return {id:cuid(),k:"ex",n:name||"",sec:sec||0,ref:ref||null}}
+function stepRest(sec){return {id:cuid(),k:"rest",n:"Rest",sec:sec||0}}
+function newBlock(n){return {id:cuid(),n:"Circuit "+n,rounds:3,rest:60,steps:[stepEx("",40),stepRest(20)]}}
+function newCircuit(){return {id:cuid(),name:"",ready:10,blocks:[newBlock(1)]}}
+/* timeline: what actually plays, in order */
+function buildTL(c){
+  var tl=[];
+  if(c.ready>0)tl.push({k:"ready",n:"Get ready",sec:c.ready,bi:0,r:0});
+  c.blocks.forEach(function(b,bi){
+    var last=bi===c.blocks.length-1,steps=b.steps.filter(function(s){return s.k==="rest"?s.sec>0:true});
+    for(var r=1;r<=Math.max(1,b.rounds);r++){
+      steps.forEach(function(s,si){
+        var finalStep=r===Math.max(1,b.rounds)&&si===steps.length-1;
+        if(finalStep&&s.k==="rest"&&(last||b.rest>0))return; /* no pointless rest right before the between-circuit rest or the finish */
+        tl.push({k:s.k,n:s.k==="rest"?(s.n||"Rest"):(s.n||"Exercise"),sec:s.sec,bi:bi,r:r,rounds:Math.max(1,b.rounds),ref:s.ref||null,bn:b.n||("Circuit "+(bi+1))});
+      });
+    }
+    if(!last&&b.rest>0)tl.push({k:"brest",n:"Rest",sec:b.rest,bi:bi,r:0,bn:b.n,next:c.blocks[bi+1].n||("Circuit "+(bi+2))});
+  });
+  return tl;
+}
+function tlTotal(tl){return tl.reduce(function(a,s){return a+(s.sec||0)},0)}
+function tlManual(tl){return tl.filter(function(s){return !s.sec&&s.k==="ex"}).length}
+function circuitSummary(c){var tl=buildTL(c),t=tlTotal(tl),m=tlManual(tl);return c.blocks.length+" circuit"+(c.blocks.length===1?"":"s")+" · "+(t?fmtClock(t):"0:00")+(m?" + "+m+" untimed":"")}
+
+/* ---------- templates ---------- */
+function exRef(mk,n,v){return {m:mk,n:n,v:v||"bw"}}
+var CTPL=[
+  {t:"Sprint intervals",make:function(){return {id:cuid(),name:"Sprint intervals",ready:10,blocks:[
+    {id:cuid(),n:"Circuit 1",rounds:4,rest:120,steps:[stepEx("Sprint",40),stepRest(10)]},
+    {id:cuid(),n:"Circuit 2",rounds:4,rest:0,steps:[stepEx("Sprint",30),stepRest(15)]}]}}},
+  {t:"Tabata",make:function(){return {id:cuid(),name:"Tabata",ready:10,blocks:[
+    {id:cuid(),n:"Tabata",rounds:8,rest:0,steps:[stepEx("Squat Jump",20,exRef("jumping","Squat Jump")),stepRest(10)]}]}}},
+  {t:"Jump circuit",make:function(){return {id:cuid(),name:"Jump circuit",ready:10,blocks:[
+    {id:cuid(),n:"Elastic",rounds:3,rest:90,steps:[stepEx("Pogo Hops",30,exRef("jumping","Pogo Hops")),stepRest(15),stepEx("Skater Hops",30,exRef("jumping","Skater Hops")),stepRest(15),stepEx("Tuck Jump",20,exRef("jumping","Tuck Jump")),stepRest(30)]},
+    {id:cuid(),n:"Power",rounds:4,rest:0,steps:[stepEx("Broad Jump",20,exRef("jumping","Broad Jump")),stepRest(40)]}]}}},
+  {t:"Core burner",make:function(){return {id:cuid(),name:"Core burner",ready:10,blocks:[
+    {id:cuid(),n:"Circuit 1",rounds:3,rest:60,steps:[stepEx("Plank",45,exRef("core","Plank")),stepRest(15),stepEx("Russian Twist",40,exRef("core","Russian Twist","bw")),stepRest(15),stepEx("Dead Bug",40,exRef("pilates","Dead Bug","mat")),stepRest(20)]}]}}}
+];
+
+/* ---------- list page ---------- */
+function renderCircuits(){
+  var h="";
+  if(!S.circuits.length)h='<div class="card empty-msg">No circuits yet.<br><span>Build one from scratch or start from a template below.</span></div>';
+  S.circuits.forEach(function(c,i){
+    h+='<div class="card ccard press" data-i="'+i+'"><div class="cmeta"><b>'+esc(c.name||"Untitled circuit")+'</b><span>'+esc(circuitSummary(c))+'</span></div>'+
+      '<button class="cgo" data-i="'+i+'" aria-label="Start">'+icon("i-play")+'</button></div>';
+  });
+  $("cirList").innerHTML=h;
+  $("cirTpl").innerHTML=CTPL.map(function(t,i){return '<button class="chip" data-t="'+i+'">'+t.t+'</button>'}).join("");
+  pressAll("#cirList .ccard",function(el,e){if(e&&e.target&&e.target.closest&&e.target.closest(".cgo"))return;openCircuit(S.circuits[parseInt(el.getAttribute("data-i"),10)].id)});
+  document.querySelectorAll("#cirList .cgo").forEach(function(b){
+    b.addEventListener("click",function(e){e.stopPropagation();e.preventDefault();buzz();startCircuit(S.circuits[parseInt(b.getAttribute("data-i"),10)])});
+    b.addEventListener("pointerdown",function(e){e.stopPropagation()});
+  });
+  pressAll("#cirTpl .chip",function(el){var c=CTPL[parseInt(el.getAttribute("data-t"),10)].make();S.circuits.push(c);save();renderCircuits();openCircuit(c.id);toast("Template added. Edit anything.")});
+}
+pressable($("cirNew"),function(){var c=newCircuit();S.circuits.push(c);save();openCircuit(c.id)});
+
+/* ---------- editor ---------- */
+var CE=null,cPickTarget=null;
+function curC(){for(var i=0;i<S.circuits.length;i++)if(S.circuits[i].id===CE)return S.circuits[i];return null}
+function openCircuit(id){CE=id;renderCEditor();$("csheet").classList.add("open");$("csheet").setAttribute("aria-hidden","false")}
+function closeCircuit(){
+  var c=curC();
+  if(c&&!c.blocks.some(function(b){return b.steps.some(function(s){return s.k==="ex"})})&&!c.name){S.circuits=S.circuits.filter(function(x){return x.id!==c.id});save()}
+  cirPick.close();$("csheet").classList.remove("open");$("csheet").setAttribute("aria-hidden","true");CE=null;if(page==="cir")renderCircuits();
+}
+function updTotal(){var c=curC();if(c)$("cTotal").textContent=circuitSummary(c)}
+function renderCEditor(){
+  var c=curC();if(!c)return;
+  $("cName").value=c.name||"";
+  $("cReady").innerHTML=[0,5,10,15,20].map(function(v){return '<button data-v="'+v+'" class="'+(c.ready===v?"on":"")+'">'+(v?v+"s":"Off")+'</button>'}).join("");
+  pressAll("#cReady button",function(b){c.ready=parseInt(b.getAttribute("data-v"),10);save();renderCEditor()});
+  var h="";
+  c.blocks.forEach(function(b,bi){
+    var last=bi===c.blocks.length-1;
+    h+='<div class="card cblock" data-b="'+bi+'"><div class="cbh"><input class="cbname" data-b="'+bi+'" value="'+esc(b.n||"")+'" placeholder="Circuit '+(bi+1)+'" maxlength="30">'+
+      '<div class="cbtools"><button data-a="bup" data-b="'+bi+'" aria-label="Move circuit up">'+icon("i-up")+'</button><button data-a="bdn" data-b="'+bi+'" aria-label="Move circuit down">'+icon("i-down")+'</button><button data-a="bdup" data-b="'+bi+'" aria-label="Duplicate circuit">'+icon("i-plus")+'</button><button data-a="bdel" data-b="'+bi+'" aria-label="Delete circuit">'+icon("i-close")+'</button></div></div>';
+    if(!b.steps.length)h+='<div class="cempty">Add an exercise or a rest below.</div>';
+    b.steps.forEach(function(s,si){
+      h+='<div class="cstep '+s.k+'"><i class="cdot"></i>'+
+        '<input class="csname" data-b="'+bi+'" data-s="'+si+'" value="'+esc(s.k==="rest"&&s.n==="Rest"?"":s.n)+'" placeholder="'+(s.k==="rest"?"Rest":"Exercise name")+'" maxlength="40">'+
+        (s.k==="ex"?'<button class="cspick" data-b="'+bi+'" data-s="'+si+'" aria-label="Pick from exercises">'+icon("i-list")+'</button>':'')+
+        '<input class="csdur" data-b="'+bi+'" data-s="'+si+'" value="'+fmtDur(s.sec)+'" placeholder="'+(s.k==="ex"?"tap":"0:30")+'" inputmode="text" maxlength="6">'+
+        '<div class="cstools"><button data-a="sup" data-b="'+bi+'" data-s="'+si+'" aria-label="Move up">'+icon("i-up")+'</button><button data-a="sdel" data-b="'+bi+'" data-s="'+si+'" aria-label="Remove">'+icon("i-close")+'</button></div></div>'+
+        (s.ref?'<div class="csref">From library: '+esc(s.ref.n)+' · shows the animation while it runs</div>':'');
+    });
+    h+='<div class="cbadd"><button class="btn" data-a="addex" data-b="'+bi+'">'+icon("i-plus")+'Exercise</button><button class="btn" data-a="addrest" data-b="'+bi+'">'+icon("i-plus")+'Rest</button></div>'+
+      '<div class="cbrow"><span>Repeat this circuit</span><div class="cstp"><button data-a="rm" data-b="'+bi+'">−</button><b>× '+b.rounds+'</b><button data-a="rp" data-b="'+bi+'">+</button></div></div>'+
+      (last?'<div class="cbrow dim"><span>After this circuit</span><b class="cend">Workout ends</b></div>':
+        '<div class="cbrow"><span>Rest before '+esc(c.blocks[bi+1].n||("Circuit "+(bi+2)))+'</span><input class="cbrest" data-b="'+bi+'" value="'+fmtDur(b.rest)+'" placeholder="none" maxlength="6"></div>')+
+      '</div>';
+  });
+  $("cBlocks").innerHTML=h;updTotal();
+  var root=$("cBlocks");
+  root.querySelectorAll(".cbname").forEach(function(inp){inp.addEventListener("input",function(){c.blocks[+inp.getAttribute("data-b")].n=inp.value;save();updTotal()});inp.addEventListener("change",function(){renderCEditor()})});
+  root.querySelectorAll(".csname").forEach(function(inp){inp.addEventListener("input",function(){var s=c.blocks[+inp.getAttribute("data-b")].steps[+inp.getAttribute("data-s")];s.n=inp.value||(s.k==="rest"?"Rest":"");if(s.ref&&s.n!==s.ref.n)s.ref=null;save()})});
+  root.querySelectorAll(".csdur,.cbrest").forEach(function(inp){
+    inp.addEventListener("input",function(){var v=parseDur(inp.value),b=c.blocks[+inp.getAttribute("data-b")];if(inp.classList.contains("cbrest"))b.rest=v;else b.steps[+inp.getAttribute("data-s")].sec=v;save();updTotal()});
+    inp.addEventListener("blur",function(){var v=parseDur(inp.value);inp.value=fmtDur(v)});
+  });
+  pressAll("#cBlocks [data-a]",function(el){
+    var a=el.getAttribute("data-a"),bi=+el.getAttribute("data-b"),si=+el.getAttribute("data-s"),b=c.blocks[bi];
+    if(a==="addex"){b.steps.push(stepEx("",30));}
+    else if(a==="addrest"){b.steps.push(stepRest(15));}
+    else if(a==="rm"){b.rounds=Math.max(1,b.rounds-1)}
+    else if(a==="rp"){b.rounds=Math.min(99,b.rounds+1)}
+    else if(a==="sdel"){b.steps.splice(si,1)}
+    else if(a==="sup"&&si>0){var t=b.steps[si];b.steps[si]=b.steps[si-1];b.steps[si-1]=t}
+    else if(a==="bup"&&bi>0){var t2=c.blocks[bi];c.blocks[bi]=c.blocks[bi-1];c.blocks[bi-1]=t2}
+    else if(a==="bdn"&&bi<c.blocks.length-1){var t3=c.blocks[bi];c.blocks[bi]=c.blocks[bi+1];c.blocks[bi+1]=t3}
+    else if(a==="bdup"){var cp=JSON.parse(JSON.stringify(b));cp.id=cuid();cp.steps.forEach(function(s){s.id=cuid()});cp.n=(b.n||"Circuit")+" copy";c.blocks.splice(bi+1,0,cp)}
+    else if(a==="bdel"){if(c.blocks.length===1){toast("A workout needs at least one circuit");return}if(!window.confirm("Delete "+(b.n||"this circuit")+"?"))return;c.blocks.splice(bi,1)}
+    save();renderCEditor();
+    if(a==="addex"){var ins=$("cBlocks").querySelectorAll('.cblock[data-b="'+bi+'"] .csname');if(ins.length)ins[ins.length-1].focus()}
+  });
+  pressAll("#cBlocks .cspick",function(el){cPickTarget=[+el.getAttribute("data-b"),+el.getAttribute("data-s")];if(!cirPick.isOpen())cirPick.toggleOpen();else setTimeout(function(){try{$("cPick").scrollIntoView({behavior:"smooth",block:"start"})}catch(e){}},30)});
+}
+var cirPick=mkPicker({box:"cPick",pre:"c",ctx:"draft",
+  isIn:function(){return false},
+  toggle:function(mk,ex,k){
+    var c=curC();if(!c||!cPickTarget)return false;
+    var s=c.blocks[cPickTarget[0]]&&c.blocks[cPickTarget[0]].steps[cPickTarget[1]];
+    if(s){s.n=ex.n;s.ref={m:mk,n:ex.n,v:k};save()}
+    cirPick.close();renderCEditor();toast("Set to "+ex.n);return false;
+  }});
+$("cName").addEventListener("input",function(){var c=curC();if(c){c.name=$("cName").value;save()}});
+pressable($("cAddBlock"),function(){var c=curC();if(!c)return;c.blocks.push(newBlock(c.blocks.length+1));save();renderCEditor();setTimeout(function(){var bl=$("cBlocks").querySelectorAll(".cblock");try{bl[bl.length-1].scrollIntoView({behavior:"smooth",block:"start"})}catch(e){}},40)});
+pressable($("cClose"),closeCircuit);pressable($("cScrim"),closeCircuit);
+pressable($("cDel"),function(){var c=curC();if(c&&window.confirm("Delete this circuit workout?")){S.circuits=S.circuits.filter(function(x){return x.id!==c.id});save();CE=null;closeCircuit();toast("Circuit deleted")}});
+pressable($("cStart"),function(){var c=curC();if(!c)return;if(!c.name){c.name="Circuit "+(S.circuits.indexOf(c)+1);save()}startCircuit(c)});
+
+/* ---------- runner ---------- */
+var CR=null,crTick=null,crStage=null;
+function speak(t){if(!S.cvoice||!S.sound)return;try{if(window.speechSynthesis){window.speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(t);u.rate=1.05;window.speechSynthesis.speak(u)}}catch(e){}}
+function startCircuit(c){
+  var tl=buildTL(c);
+  if(!tl.some(function(s){return s.k==="ex"})){toast("Add at least one exercise first");return}
+  beep(1,.001);
+  CR={c:c,tl:tl,i:0,t0:Date.now(),stepAt:Date.now(),paused:false,pauseAt:0,lastSec:-1,total:tlTotal(tl)};
+  $("crun").hidden=false;document.body.classList.add("crunning");wakeOn();
+  stepStart();clearInterval(crTick);crTick=setInterval(crUpdate,150);crUpdate();
+}
+function stepLabel(s){return s.k==="brest"?"Rest · then "+s.next:s.k==="ready"?"Get ready":s.k==="rest"?(s.n||"Rest"):s.n}
+function stepStart(){
+  var s=CR.tl[CR.i];CR.lastSec=-1;
+  if(s.k==="ex"){beep(880,.35);vib([120]);speak(s.n+(s.sec?", "+(s.sec>=60?Math.floor(s.sec/60)+" minute"+(s.sec>=120?"s":"")+(s.sec%60?" "+(s.sec%60)+" seconds":""):s.sec+" seconds"):""))}
+  else if(s.k==="ready"){speak("Get ready. First up, "+(CR.tl[1]?CR.tl[1].n:""))}
+  else{beep(523,.35);vib([60]);var nx=CR.tl[CR.i+1];speak((s.k==="brest"?"Rest. Next circuit, "+s.next:"Rest")+(nx&&s.k!=="brest"?". Next, "+nx.n:""))}
+  /* animation for library exercises */
+  if(crStage){crStage.destroy();crStage=null}
+  var box=$("crAnim"),ref=s.k==="ex"?s.ref:null,ex=ref?findEx(ref.m,ref.n):null;
+  if(ex){var v=getVar(ex,ref.v);box.hidden=false;crStage=Stage(box,vAnim(ex,v),[v.k],ref.m,{})}else{box.hidden=true;box.innerHTML=""}
+  crRender();
+}
+function crAdvance(at){
+  if(CR.i>=CR.tl.length-1){crFinish();return}
+  CR.i++;CR.stepAt=at||Date.now();stepStart();
+}
+function crElapsed(){return ((CR.paused?CR.pauseAt:Date.now())-CR.stepAt)/1000}
+function crUpdate(){
+  if(!CR)return;
+  if(!CR.paused){
+    var guard=0;
+    while(CR&&guard++<500){var s=CR.tl[CR.i];if(!s.sec)break;var el=crElapsed();if(el<s.sec)break;var at=CR.stepAt+s.sec*1000;if(CR.i>=CR.tl.length-1){crFinish();return}CR.i++;CR.stepAt=at;stepStart();}
+    if(!CR)return;
+    var s2=CR.tl[CR.i];
+    if(s2.sec){var left=Math.ceil(s2.sec-crElapsed());if(left<=3&&left>0&&left!==CR.lastSec){beep(660,.12);vib([30])}CR.lastSec=left}
+  }
+  crRender();
+}
+function crRemaining(){var s=CR.tl[CR.i],r=s.sec?Math.max(0,s.sec-crElapsed()):0;for(var j=CR.i+1;j<CR.tl.length;j++)r+=CR.tl[j].sec||0;return r}
+function crRender(){
+  if(!CR)return;
+  var s=CR.tl[CR.i],el=crElapsed(),c=CR.c;
+  var phase=s.k==="ex"?"work":s.k==="ready"?"ready":"rest";
+  $("crun").className="crun "+phase+(CR.paused?" paused":"");
+  $("crName").textContent=c.name||"Circuit";
+  $("crBlock").textContent=s.k==="ready"?"Starting "+(c.blocks[0].n||"Circuit 1"):s.k==="brest"?(s.bn||"Circuit")+" done":(s.bn+" · Round "+s.r+"/"+s.rounds);
+  $("crStep").textContent=stepLabel(s);
+  if(s.sec){var left=Math.max(0,s.sec-el);$("crTime").textContent=fmtClock(left);$("crRing").style.strokeDashoffset=String(691.15*(1-Math.min(1,el/s.sec)));$("crDone").hidden=true}
+  else{$("crTime").textContent="GO";$("crRing").style.strokeDashoffset="0";$("crDone").hidden=false}
+  var nx=CR.tl[CR.i+1];$("crNext").innerHTML=nx?'Next: <b>'+esc(stepLabel(nx))+'</b>'+(nx.sec?' · '+fmtDur(nx.sec):''):'Last one. Finish strong.';
+  var done=(Date.now()-CR.t0)/1000;$("crElapsed").textContent=fmtClock(done);$("crLeft").textContent=fmtClock(crRemaining());
+  $("crBar").style.width=(CR.total?Math.min(100,100*(1-crRemaining()/CR.total)):(100*CR.i/CR.tl.length)).toFixed(1)+"%";
+  $("crPause").innerHTML=icon(CR.paused?"i-play":"i-pause")+(CR.paused?"Resume":"Pause");
+}
+function crFinish(){
+  var c=CR.c,sec=Math.round((Date.now()-CR.t0)/1000);
+  beep(988,.25);setTimeout(function(){beep(988,.25)},300);setTimeout(function(){beep(1319,.6)},600);vib([200,100,200,100,400]);speak("Circuit complete. Great work.");
+  crStop(true);
+  if(!S.active&&sec>=60){var now=Date.now();S.sessions.push({id:now,s:now-sec*1000,e:now,sec:sec,n:c.name||"Circuit",w:null,ex:[],cir:c.id});save();toast("Circuit done · session logged "+fmtMin(Math.floor(sec/60)))}
+  else toast("Circuit complete");
+  if(page==="dash")renderDash();if(page==="cir")renderCircuits();
+}
+function crStop(silent){
+  clearInterval(crTick);crTick=null;if(crStage){crStage.destroy();crStage=null}
+  CR=null;$("crun").hidden=true;document.body.classList.remove("crunning");wakeOff();
+  try{if(window.speechSynthesis)window.speechSynthesis.cancel()}catch(e){}
+}
+pressable($("crPause"),function(){if(!CR)return;if(CR.paused){CR.stepAt+=Date.now()-CR.pauseAt;CR.paused=false}else{CR.paused=true;CR.pauseAt=Date.now()}crRender()});
+pressable($("crNextBtn"),function(){if(!CR)return;if(CR.paused){CR.paused=false}crAdvance(Date.now())});
+pressable($("crDone"),function(){if(CR)crAdvance(Date.now())});
+pressable($("crPrev"),function(){if(!CR)return;if(crElapsed()>3||CR.i===0){CR.stepAt=Date.now()}else{CR.i--;CR.stepAt=Date.now()}if(CR.paused){CR.pauseAt=CR.stepAt}stepStart()});
+pressable($("crStop"),function(){if(!CR)return;if(window.confirm("Stop this circuit?")){var sec=Math.round((Date.now()-CR.t0)/1000),c=CR.c;crStop();
+  if(!S.active&&sec>=120&&window.confirm("Log the "+fmtMin(Math.floor(sec/60))+" you did as a session?")){var now=Date.now();S.sessions.push({id:now,s:now-sec*1000,e:now,sec:sec,n:c.name||"Circuit",w:null,ex:[],cir:c.id});save();toast("Session logged");if(page==="dash")renderDash()}}});
+document.addEventListener("visibilitychange",function(){if(!document.hidden&&CR){crUpdate();wakeOn()}});
+
 
 /* ---------- settings ---------- */
 function setSeg(id,val,onPick){
@@ -3897,6 +4231,8 @@ if("serviceWorker" in navigator&&/^https?:$/.test(location.protocol)){
   }).catch(function(){offlineStatus("Offline mode unavailable in this browser.")});
 }else offlineStatus(location.protocol==="file:"?"Opened as a file. Offline install works once it's on your GitHub Pages site.":"Offline mode unavailable in this browser.");
 pressable($("swUpdate"),function(){if(swReg){swReg.update().then(function(){toast("Checked for updates")}).catch(function(){toast("You're offline. Try later.")})}else toast("Not installed from a website")});
+setSwitch("swVoice",function(){return S.cvoice},function(){S.cvoice=!S.cvoice;save();toast(S.cvoice?"Voice cues on":"Voice cues off")});
+pressable($("hdrSet"),function(){go("set")});
 setSwitch("swSound",function(){return S.sound},function(){S.sound=!S.sound;save();toast(S.sound?"Timer sound on":"Timer sound off")});
 pressable($("resetBtn"),function(){
   if(window.confirm("Erase all SPLIT data on this device?")){try{localStorage.removeItem(KEY);localStorage.removeItem("split_v6");localStorage.removeItem("split_v5");localStorage.removeItem("split_v4")}catch(e){}location.reload()}
